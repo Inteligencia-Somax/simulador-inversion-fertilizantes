@@ -90,7 +90,7 @@
   }
   .field input:focus,.field select:focus{border-color:var(--amber);box-shadow:0 0 0 4px rgba(200,132,31,.18)}
   #cultivo{width:170px}
-  #precioBolsa,#pesoSaco{width:110px}
+  #precioBolsa{width:170px}
   .hint{font-size:12.5px;color:var(--muted);max-width:26ch}
   .btns{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
   button.ctl{
@@ -238,6 +238,12 @@
   .rep-card .lab{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--leaf)}
   .rep-card .big{font-family:'Montserrat',sans-serif;font-weight:600;font-size:19px;color:var(--forest);margin-top:3px;line-height:1.1}
   .rep-card .sm{font-size:12px;color:var(--muted);margin-top:3px}
+  .rep-card.prom{background:linear-gradient(135deg,var(--forest) 0%,#0f3d24 100%);border-color:#0f3d24;
+    box-shadow:0 10px 26px -18px rgba(20,40,25,.7);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .rep-card.prom .lab{color:var(--amber)}
+  .rep-card.prom .big{color:#fff}
+  .rep-card.prom .sm{color:rgba(255,255,255,.75)}
   .rep-scroller{overflow-x:auto;margin-bottom:14px;-webkit-overflow-scrolling:touch;
     border-radius:8px;border:1px solid #ddd2b6}
   table.reptab{border-collapse:collapse;width:100%;min-width:460px;font-size:12px;margin-bottom:0}
@@ -294,7 +300,7 @@
     .sub{font-size:13.5px}
     .panel{padding:16px;gap:14px;flex-direction:column;align-items:stretch}
     .panel .field{width:100%}
-    #cultivo,#precioBolsa,#pesoSaco{width:100%;box-sizing:border-box}
+    #cultivo,#precioBolsa{width:100%;box-sizing:border-box}
     .hint{max-width:none}
     .btns{margin-left:0;width:100%;flex-direction:column;gap:8px}
     .btns button.ctl{width:100%;box-sizing:border-box;padding:12px 15px;font-size:14px}
@@ -358,12 +364,8 @@
       </select>
     </div>
     <div class="field">
-      <label for="precioBolsa">Precio bolsa soja (US$)</label>
+      <label for="precioBolsa">Precio bolsa (US$)</label>
       <input id="precioBolsa" type="text" inputmode="decimal" placeholder="0.00" value="">
-    </div>
-    <div class="field">
-      <label for="pesoSaco">Peso bolsa (kg)</label>
-      <input id="pesoSaco" type="text" inputmode="decimal" value="60">
     </div>
     <div class="hint">Los campos amarillos son editables.</div>
     <div class="btns">
@@ -484,14 +486,12 @@ function renderRowTotals(side){
   const totBox = document.getElementById(side==="comp"?"totComp":"totProm");
   const tot = calcTotals(side);
   const costs = calcRowCosts(side).filter(v=>v!=null);
-  const chips = NUTR.filter(n=>tot.nutrKg[n]>0.0001).map(n=>`<div class="tchip"><span>${NUTR_LABEL[n]}</span> <b>${fmt(tot.nutrKg[n],2)}</b></div>`).join("");
   const breakdown = costs.length>1 ? costs.map((v,i)=>`<div class="tchip">P${i+1} <b>${fmtUSD(v,2)}</b></div>`).join("") : "";
   totBox.innerHTML = `
     <div class="totchips">
       <div class="tchip main">Costo <b>${fmtUSD(tot.totalCostHa,2)}</b>/ha</div>
       <div class="tchip">Dosis <b>${fmt(tot.totalDose,0)}</b> kg/ha</div>
-      ${chips}
-      ${tot.pontos?`<div class="tchip">Puntos <b>${fmt(tot.pontos,1)}</b></div><div class="tchip">$/punto <b>${fmt(tot.valorPonto,2)}</b></div>`:""}
+      ${tot.pontos?`<div class="tchip">Puntos <b>${fmt(tot.pontos,1)}</b></div>`:""}
       ${breakdown}
     </div>`;
 }
@@ -545,7 +545,7 @@ function renderBalance(){
 /* ================= KPIs / inversão ================= */
 function renderKPIs(c,p){
   const precioBolsa = toNum(document.getElementById("precioBolsa").value)||0;
-  const pesoSaco = toNum(document.getElementById("pesoSaco").value)||60;
+  const pesoSaco = 60;
   const hayCosto = c.totalCostHa>0 || p.totalCostHa>0;
 
   const manejoComp = precioBolsa>0 ? c.totalCostHa/precioBolsa : null;
@@ -573,7 +573,7 @@ function renderKPIs(c,p){
   if(!hayCosto){
     note.innerHTML = "Completá precio, dosis y análisis de un producto de cada lado.";
   } else if(precioBolsa<=0){
-    note.innerHTML = "Ingresá el <b>precio de la bolsa de soja</b> arriba para ver la conclusión.";
+    note.innerHTML = "Ingresá el <b>precio de la bolsa</b> arriba para ver la conclusión.";
   } else {
     const doseComp = c.totalDose, doseProm = p.totalDose;
     let doseLine = "";
@@ -639,9 +639,7 @@ function updateTotalsOnly(side){
 
 document.getElementById("cultivo").addEventListener("input", rebuild);
 document.getElementById("cultivo").addEventListener("change", rebuild);
-["precioBolsa","pesoSaco"].forEach(id=>{
-  document.getElementById(id).addEventListener("input", ()=>{ const {c,p}=renderBalance(); renderKPIs(c,p); });
-});
+document.getElementById("precioBolsa").addEventListener("input", ()=>{ const {c,p}=renderBalance(); renderKPIs(c,p); });
 
 /* ================= add / remove linhas ================= */
 document.addEventListener("click", e=>{
@@ -678,7 +676,7 @@ document.addEventListener("click", e=>{
 document.getElementById("genReport").addEventListener("click", ()=>{
   const cultivo = document.getElementById("cultivo").value || "—";
   const precioBolsa = toNum(document.getElementById("precioBolsa").value)||0;
-  const pesoSaco = toNum(document.getElementById("pesoSaco").value)||60;
+  const pesoSaco = 60;
   const c = calcTotals("comp"), p = calcTotals("prom");
   const manejoComp = precioBolsa>0 ? c.totalCostHa/precioBolsa : 0;
   const manejoProm = precioBolsa>0 ? p.totalCostHa/precioBolsa : 0;
@@ -714,11 +712,11 @@ document.getElementById("genReport").addEventListener("click", ()=>{
     <div class="rep-meta">
       <span><b>Fecha:</b> ${hoje}</span>
       <span><b>Cultivo:</b> ${cultivo}</span>
-      <span><b>Precio bolsa soja:</b> ${fmtUSD(precioBolsa,2)}</span>
+      <span><b>Precio bolsa:</b> ${fmtUSD(precioBolsa,2)}</span>
     </div>
     <div class="rep-cards">
       <div class="rep-card"><div class="lab">Costo manejo Competencia</div><div class="big">${fmt(manejoComp,2)} sc/ha</div><div class="sm">${fmtUSD(c.totalCostHa,2)}/ha</div></div>
-      <div class="rep-card"><div class="lab">Costo manejo Propio</div><div class="big">${fmt(manejoProm,2)} sc/ha</div><div class="sm">${fmtUSD(p.totalCostHa,2)}/ha</div></div>
+      <div class="rep-card prom"><div class="lab">Costo manejo Propio</div><div class="big">${fmt(manejoProm,2)} sc/ha</div><div class="sm">${fmtUSD(p.totalCostHa,2)}/ha</div></div>
       <div class="rep-card"><div class="lab">Diferencia de inversión</div><div class="big">${diffSc>=0?"+":""}${fmt(diffSc,2)} sc/ha</div><div class="sm">≈ ${diffKg>=0?"+":""}${fmt(diffKg,1)} kg/ha de rinde</div></div>
       <div class="rep-card"><div class="lab">Diferencia US$/ha</div><div class="big">${diffUSDha>=0?"+":""}${fmtUSD(diffUSDha,2)}</div><div class="sm">Propio vs Competencia</div></div>
     </div>
@@ -736,7 +734,7 @@ document.getElementById("printReport").addEventListener("click",()=>window.print
 function buildAOA(){
   const cultivo = document.getElementById("cultivo").value || "—";
   const precioBolsa = toNum(document.getElementById("precioBolsa").value)||0;
-  const pesoSaco = toNum(document.getElementById("pesoSaco").value)||60;
+  const pesoSaco = 60;
   const c = calcTotals("comp"), p = calcTotals("prom");
   const manejoComp = precioBolsa>0 ? c.totalCostHa/precioBolsa : 0;
   const manejoProm = precioBolsa>0 ? p.totalCostHa/precioBolsa : 0;
