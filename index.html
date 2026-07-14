@@ -9,7 +9,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   :root{
     --paper:#ffffff;
@@ -106,6 +105,7 @@
   button.ctl.amber{border-color:var(--amber);color:#8a5a0c}
   button.ctl.amber:hover{background:var(--amber);color:#fff}
   button.ctl.small{padding:6px 10px;font-size:12px}
+  .btxt-short{display:none}
 
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:22px 0}
   @media(max-width:940px){.grid2{grid-template-columns:1fr}}
@@ -302,8 +302,10 @@
     .panel .field{width:100%}
     #cultivo,#precioBolsa{width:100%;box-sizing:border-box}
     .hint{max-width:none}
-    .btns{margin-left:0;width:100%;flex-direction:column;gap:8px}
-    .btns button.ctl{width:100%;box-sizing:border-box;padding:12px 15px;font-size:14px}
+    .btns{margin-left:0;width:100%;flex-direction:row;gap:6px}
+    .btns button.ctl{flex:1 1 0;box-sizing:border-box;padding:9px 4px;font-size:11px;white-space:nowrap}
+    .btns button.ctl .btxt-full{display:none}
+    .btns button.ctl .btxt-short{display:inline}
     .cardhead h3{font-size:16px}
     .modal-body{padding:16px}
     .modal-head{padding:14px 16px}
@@ -314,7 +316,7 @@
     .rows{padding:12px 12px 2px;gap:10px}
     .prow{padding:10px 11px}
     .prow-nutr{grid-template-columns:repeat(4,1fr)}
-    .pfield.sel{flex:1 1 100%}
+    .pfield.sel{flex:1 1 calc(50% - 4px)}
     .pfield.sm{flex:1 1 calc(50% - 4px)}
     .rmbtn{order:1}
     .addrow{padding:4px 12px 14px}
@@ -369,9 +371,8 @@
     </div>
     <div class="hint">Los campos amarillos son editables.</div>
     <div class="btns">
-      <button class="ctl amber" id="genReport">📄 Generar informe</button>
-      <button class="ctl amber" id="exportXls">⬇ Exportar Excel</button>
-      <button class="ctl" id="clearAll">🧹 Limpiar todo</button>
+      <button class="ctl amber" id="genReport">📄 <span class="btxt-full">Generar informe</span><span class="btxt-short">Informe</span></button>
+      <button class="ctl" id="clearAll">🧹 <span class="btxt-full">Limpiar todo</span><span class="btxt-short">Limpiar</span></button>
     </div>
   </div>
 
@@ -435,7 +436,6 @@
     <div class="modal-foot">
       <button class="ctl" data-close="reportModal">Cerrar</button>
       <button class="ctl amber" id="printReport">🖨 Imprimir / Guardar PDF</button>
-      <button class="ctl primary" id="reportXls">⬇ Exportar Excel</button>
     </div>
   </div>
 </div>
@@ -493,7 +493,7 @@ function renderRowTotals(side){
     <div class="totchips">
       <div class="tchip main">Costo <b>${fmtUSD(tot.totalCostHa,2)}</b>/ha</div>
       <div class="tchip">Dosis <b>${fmt(tot.totalDose,0)}</b> kg/ha</div>
-      ${tot.pontos?`<div class="tchip">Puntos <b>${fmt(tot.pontos,1)}</b></div>`:""}
+      ${tot.pontos?`<div class="tchip">Puntos <b>${fmt(tot.pontos,1)}</b></div><div class="tchip">$/punto <b>${fmt(tot.valorPonto,2)}</b></div>`:""}
       ${breakdown}
     </div>`;
 }
@@ -749,7 +749,7 @@ document.addEventListener("click", e=>{
 });
 
 /* ================= informe ================= */
-document.getElementById("genReport").addEventListener("click", ()=>{
+function computeReportData(){
   const cultivo = document.getElementById("cultivo").value || "—";
   const precioBolsa = toNum(document.getElementById("precioBolsa").value)||0;
   const pesoSaco = 60;
@@ -761,26 +761,27 @@ document.getElementById("genReport").addEventListener("click", ()=>{
   const diffUSDha = p.totalCostHa - c.totalCostHa;
   const hoje = new Date().toLocaleDateString("es-PY");
 
-  let nutrRows = NUTR.map(n=>{
+  const nutrRows = NUTR.map(n=>{
     const diff = p.nutrKg[n]-c.nutrKg[n];
-    const cls = diff>0.005?"pos":(diff<-0.005?"neg":"");
-    return `<tr><td>${NUTR_LABEL[n]}</td><td>${fmt(c.nutrKg[n],2)}</td><td>${fmt(p.nutrKg[n],2)}</td><td class="${cls}">${diff>0?"+":""}${fmt(diff,2)}</td></tr>`;
-  }).join("");
+    return {nutriente:NUTR_LABEL[n], comp:fmt(c.nutrKg[n],2), prop:fmt(p.nutrKg[n],2),
+      diff:(diff>0?"+":"")+fmt(diff,2), cls: diff>0.005?"pos":(diff<-0.005?"neg":"")};
+  });
 
-  const prodRow = (r,lado) => `<tr><td style="text-align:left">${lado}</td><td style="text-align:left">${r.marca||"—"}</td><td style="text-align:left">${formatNPKName(r)}</td><td>${fmtUSD(toNum(r.precio),2)}</td><td>${fmt(toNum(r.dose),0)} kg/ha</td></tr>`;
-  const prodRowsHTML = ROWS.comp.filter(r=>r.nome||r.marca||toNum(r.precio)||toNum(r.dose)).map(r=>prodRow(r,"Competencia")).join("")
-    + ROWS.prom.filter(r=>r.nome||r.marca||toNum(r.precio)||toNum(r.dose)).map(r=>prodRow(r,"Propio")).join("");
+  const prodRow = (r,lado) => ({lado, marca:r.marca||"—", producto:formatNPKName(r),
+    precio:fmtUSD(toNum(r.precio),2), dosis:fmt(toNum(r.dose),0)+" kg/ha"});
+  const prodRows = ROWS.comp.filter(r=>r.nome||r.marca||toNum(r.precio)||toNum(r.dose)).map(r=>prodRow(r,"Competencia"))
+    .concat(ROWS.prom.filter(r=>r.nome||r.marca||toNum(r.precio)||toNum(r.dose)).map(r=>prodRow(r,"Propio")));
 
   const doseComp = c.totalDose, doseProm = p.totalDose;
   let doseLine = "";
   if(doseProm>0 && doseComp>0 && doseProm<doseComp){
     doseLine = ` La dosis de manejo cargada es menor con Propio (${fmt(doseProm,0)} vs ${fmt(doseComp,0)} kg/ha).`;
   }
-  let concl = `Competencia: <b>${fmt(manejoComp,2)} sc/ha</b> (${fmtUSD(c.totalCostHa,2)}/ha) · <b>Propio</b>: <b>${fmt(manejoProm,2)} sc/ha</b> (${fmtUSD(p.totalCostHa,2)}/ha). `;
+  let concl = `Competencia: ${fmt(manejoComp,2)} sc/ha (${fmtUSD(c.totalCostHa,2)}/ha) · Propio: ${fmt(manejoProm,2)} sc/ha (${fmtUSD(p.totalCostHa,2)}/ha). `;
   if(diffSc>0){
-    concl += `Inversión adicional de <b>${fmt(diffSc,2)} sc/ha</b> (≈ ${fmt(diffKg,1)} kg/ha de rinde).${doseLine}`;
+    concl += `Inversión adicional de ${fmt(diffSc,2)} sc/ha (≈ ${fmt(diffKg,1)} kg/ha de rinde).${doseLine}`;
   } else if(diffSc<0){
-    concl += `<b>Propio</b> resulta <b>${fmt(Math.abs(diffSc),2)} sc/ha más económico</b>.${doseLine}`;
+    concl += `Propio resulta ${fmt(Math.abs(diffSc),2)} sc/ha más económico.${doseLine}`;
   } else {
     concl += `Mismo costo de manejo entre ambas opciones.${doseLine}`;
   }
@@ -788,17 +789,25 @@ document.getElementById("genReport").addEventListener("click", ()=>{
     concl += ` Mejor relación US$/punto de concentración: US$ ${fmt(p.valorPonto,2)}/punto vs US$ ${fmt(c.valorPonto,2)}/punto de la Competencia.`;
   }
 
+  return {cultivo, precioBolsa, c, p, manejoComp, manejoProm, diffSc, diffKg, diffUSDha, hoje, nutrRows, prodRows, concl};
+}
+
+document.getElementById("genReport").addEventListener("click", ()=>{
+  const d = computeReportData();
+  const nutrRowsHTML = d.nutrRows.map(r=>`<tr><td>${r.nutriente}</td><td>${r.comp}</td><td>${r.prop}</td><td class="${r.cls}">${r.diff}</td></tr>`).join("");
+  const prodRowsHTML = d.prodRows.map(r=>`<tr><td style="text-align:left">${r.lado}</td><td style="text-align:left">${r.marca}</td><td style="text-align:left">${r.producto}</td><td>${r.precio}</td><td>${r.dosis}</td></tr>`).join("");
+
   document.getElementById("reportBody").innerHTML = `
     <div class="rep-meta">
-      <span><b>Fecha:</b> ${hoje}</span>
-      <span><b>Cultivo:</b> ${cultivo}</span>
-      <span><b>Precio bolsa:</b> ${fmtUSD(precioBolsa,2)}</span>
+      <span><b>Fecha:</b> ${d.hoje}</span>
+      <span><b>Cultivo:</b> ${d.cultivo}</span>
+      <span><b>Precio bolsa:</b> ${fmtUSD(d.precioBolsa,2)}</span>
     </div>
     <div class="rep-cards">
-      <div class="rep-card"><div class="lab">Costo manejo Competencia</div><div class="big">${fmt(manejoComp,2)} sc/ha</div><div class="sm">${fmtUSD(c.totalCostHa,2)}/ha</div></div>
-      <div class="rep-card"><div class="lab">Costo manejo Propio</div><div class="big">${fmt(manejoProm,2)} sc/ha</div><div class="sm">${fmtUSD(p.totalCostHa,2)}/ha</div></div>
-      <div class="rep-card prom"><div class="lab">Diferencia de inversión</div><div class="big">${diffSc>=0?"+":""}${fmt(diffSc,2)} sc/ha</div><div class="sm">≈ ${diffKg>=0?"+":""}${fmt(diffKg,1)} kg/ha de rinde</div></div>
-      <div class="rep-card"><div class="lab">Diferencia US$/ha</div><div class="big">${diffUSDha>=0?"+":""}${fmtUSD(diffUSDha,2)}</div><div class="sm">Propio vs Competencia</div></div>
+      <div class="rep-card"><div class="lab">Costo manejo Competencia</div><div class="big">${fmt(d.manejoComp,2)} sc/ha</div><div class="sm">${fmtUSD(d.c.totalCostHa,2)}/ha</div></div>
+      <div class="rep-card"><div class="lab">Costo manejo Propio</div><div class="big">${fmt(d.manejoProm,2)} sc/ha</div><div class="sm">${fmtUSD(d.p.totalCostHa,2)}/ha</div></div>
+      <div class="rep-card prom"><div class="lab">Diferencia de inversión</div><div class="big">${d.diffSc>=0?"+":""}${fmt(d.diffSc,2)} sc/ha</div><div class="sm">≈ ${d.diffKg>=0?"+":""}${fmt(d.diffKg,1)} kg/ha de rinde</div></div>
+      <div class="rep-card"><div class="lab">Diferencia US$/ha</div><div class="big">${d.diffUSDha>=0?"+":""}${fmtUSD(d.diffUSDha,2)}</div><div class="sm">Propio vs Competencia</div></div>
     </div>
     <div class="rep-scroller">
       <table class="reptab"><thead><tr><th>Lado</th><th>Marca</th><th>Producto</th><th>US$/ton</th><th>Dosis</th></tr></thead>
@@ -807,71 +816,33 @@ document.getElementById("genReport").addEventListener("click", ()=>{
     <p style="font-size:11px;color:var(--muted);margin:2px 0 10px">Balance nutricional (kg/ha):</p>
     <div class="rep-scroller">
       <table class="reptab"><thead><tr><th>Nutriente</th><th>Competencia (kg/ha)</th><th>Propio (kg/ha)</th><th>Balance</th></tr></thead>
-      <tbody>${nutrRows}</tbody></table>
+      <tbody>${nutrRowsHTML}</tbody></table>
     </div>
     `;
   openModal("reportModal");
 });
-document.getElementById("printReport").addEventListener("click",()=>window.print());
-
-/* ================= exportação Excel ================= */
-function buildAOA(){
-  const cultivo = document.getElementById("cultivo").value || "—";
-  const precioBolsa = toNum(document.getElementById("precioBolsa").value)||0;
-  const pesoSaco = 60;
-  const c = calcTotals("comp"), p = calcTotals("prom");
-  const manejoComp = precioBolsa>0 ? c.totalCostHa/precioBolsa : 0;
-  const manejoProm = precioBolsa>0 ? p.totalCostHa/precioBolsa : 0;
-  const diffSc = manejoProm - manejoComp;
-  const diffKg = diffSc*pesoSaco;
-
-  const aoa=[];
-  aoa.push(["Simulador de inversión en fertilizantes — Competencia vs Propio"]);
-  aoa.push(["Fecha",new Date().toLocaleDateString("es-PY"),"Cultivo",cultivo,"Precio bolsa (US$)",precioBolsa]);
-  aoa.push([]);
-  aoa.push(["COMPETENCIA","Marca","US$/ton","Dosis kg/ha",...NUTR]);
-  ROWS.comp.forEach(r=>aoa.push([r.nome||"—",r.marca||"—",+r.precio||0,+r.dose||0,...NUTR.map(n=>+r.nutr[n]||0)]));
-  aoa.push(["Total nutrientes (kg/ha)","","","",...NUTR.map(n=>+c.nutrKg[n].toFixed(2))]);
-  aoa.push(["Costo US$/ha",+c.totalCostHa.toFixed(2)]);
-  aoa.push([]);
-  aoa.push(["PROPIO","Marca","US$/ton","Dosis kg/ha",...NUTR]);
-  ROWS.prom.forEach(r=>aoa.push([r.nome||"—",r.marca||"—",+r.precio||0,+r.dose||0,...NUTR.map(n=>+r.nutr[n]||0)]));
-  aoa.push(["Total nutrientes (kg/ha)","","","",...NUTR.map(n=>+p.nutrKg[n].toFixed(2))]);
-  aoa.push(["Costo US$/ha",+p.totalCostHa.toFixed(2)]);
-  aoa.push([]);
-  aoa.push(["BALANCE NUTRICIONAL (Propio − Competencia, kg/ha)","","","",...NUTR.map(n=>+(p.nutrKg[n]-c.nutrKg[n]).toFixed(2))]);
-  aoa.push([]);
-  aoa.push(["Costo manejo Competencia (sc/ha)",+manejoComp.toFixed(3)]);
-  aoa.push(["Costo manejo Propio (sc/ha)",+manejoProm.toFixed(3)]);
-  aoa.push(["Diferencia de inversión (sc/ha)",+diffSc.toFixed(3)]);
-  aoa.push(["Diferencia de inversión (kg/ha rinde)",+diffKg.toFixed(1)]);
-  aoa.push(["Puntos Competencia",+c.pontos.toFixed(1),"Valor/punto (US$)",+c.valorPonto.toFixed(3)]);
-  aoa.push(["Puntos Propio",+p.pontos.toFixed(1),"Valor/punto (US$)",+p.valorPonto.toFixed(3)]);
-  return aoa;
-}
-function exportExcel(){
-  const aoa=buildAOA();
-  const stamp=new Date().toISOString().slice(0,10);
-  if(window.XLSX){
-    const ws=XLSX.utils.aoa_to_sheet(aoa);
-    ws["!cols"]=[{wch:32},{wch:16},{wch:14},{wch:14},{wch:8},{wch:8},{wch:8},{wch:8},{wch:8},{wch:8},{wch:8},{wch:8},{wch:8}];
-    const wb=XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb,ws,"Fertilizantes");
-    XLSX.writeFile(wb,`Simulador_Fertilizantes_${stamp}.xlsx`);
-  } else {
-    const csv=aoa.map(r=>r.map(v=>{
-      const s=String(v??"");
-      return /[",;\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;
-    }).join(";")).join("\n");
-    const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8;"});
-    const a=document.createElement("a");
-    a.href=URL.createObjectURL(blob);
-    a.download=`Simulador_Fertilizantes_${stamp}.csv`;
-    a.click(); URL.revokeObjectURL(a.href);
+document.getElementById("printReport").addEventListener("click",()=>{
+  try{ window.print(); }
+  catch(err){
+    console.error("Error al imprimir:", err);
+    alert("No se pudo abrir el diálogo de impresión. Probá de nuevo, o revisá que tu navegador permita ventanas emergentes.");
   }
+});
+
+/* ================= aviso navegador in-app ================= */
+function isInAppBrowser(){
+  const ua = navigator.userAgent || "";
+  return /FBAN|FBAV|Instagram|WhatsApp|Line\/|MicroMessenger|TikTok/i.test(ua);
 }
-document.getElementById("exportXls").addEventListener("click",exportExcel);
-document.getElementById("reportXls").addEventListener("click",exportExcel);
+
+if(isInAppBrowser()){
+  window.addEventListener("DOMContentLoaded", ()=>{
+    const note=document.createElement("div");
+    note.textContent="⚠️ Estás usando un navegador dentro de otra app (WhatsApp/Instagram). Para imprimir o guardar el PDF, abrí este enlace en Chrome o Safari (⋮ o el ícono de compartir arriba).";
+    note.style.cssText="background:#fff4cf;border-bottom:2px solid #e9c65a;color:#5d4516;font-size:12.5px;font-weight:600;text-align:center;padding:9px 14px";
+    document.body.insertBefore(note, document.body.firstChild);
+  });
+}
 
 document.getElementById("clearAll").addEventListener("click", ()=>{
   document.getElementById("cultivo").value = "";
