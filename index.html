@@ -251,7 +251,7 @@
   table.reptab thead th{background:var(--forest);color:var(--paper);font-weight:600}
   table.reptab td:first-child,table.reptab th:first-child{text-align:left}
   table.reptab td.pos{background:var(--win-bg);font-weight:700;color:var(--win)}
-  table.reptab td.neg{background:var(--bad-bg);font-weight:700;color:var(--bad)}
+  table.reptab td.neg{font-weight:700;color:var(--bad)}
   .rep-concl{background:#fbf6ea;border-left:3px solid var(--amber);padding:13px 16px;
     border-radius:0 10px 10px 0;font-size:13.5px;color:#5d4516;line-height:1.55}
 
@@ -734,8 +734,8 @@ document.getElementById("genReport").addEventListener("click", ()=>{
     </div>
     <div class="rep-cards">
       <div class="rep-card"><div class="lab">Costo manejo Competencia</div><div class="big">${fmt(manejoComp,2)} sc/ha</div><div class="sm">${fmtUSD(c.totalCostHa,2)}/ha</div></div>
-      <div class="rep-card prom"><div class="lab">Costo manejo Propio</div><div class="big">${fmt(manejoProm,2)} sc/ha</div><div class="sm">${fmtUSD(p.totalCostHa,2)}/ha</div></div>
-      <div class="rep-card"><div class="lab">Diferencia de inversión</div><div class="big">${diffSc>=0?"+":""}${fmt(diffSc,2)} sc/ha</div><div class="sm">≈ ${diffKg>=0?"+":""}${fmt(diffKg,1)} kg/ha de rinde</div></div>
+      <div class="rep-card"><div class="lab">Costo manejo Propio</div><div class="big">${fmt(manejoProm,2)} sc/ha</div><div class="sm">${fmtUSD(p.totalCostHa,2)}/ha</div></div>
+      <div class="rep-card prom"><div class="lab">Diferencia de inversión</div><div class="big">${diffSc>=0?"+":""}${fmt(diffSc,2)} sc/ha</div><div class="sm">≈ ${diffKg>=0?"+":""}${fmt(diffKg,1)} kg/ha de rinde</div></div>
       <div class="rep-card"><div class="lab">Diferencia US$/ha</div><div class="big">${diffUSDha>=0?"+":""}${fmtUSD(diffUSDha,2)}</div><div class="sm">Propio vs Competencia</div></div>
     </div>
     <div class="rep-scroller">
