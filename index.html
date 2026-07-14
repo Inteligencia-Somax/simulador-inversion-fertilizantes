@@ -447,7 +447,7 @@ const NUTR_LABEL = {N:"N",P:"P",K:"K",Ca:"Ca",Mg:"Mg",S:"S",Zn:"Zn",B:"B",Mn:"Mn
 function toNum(v){ if(v==null||v==="") return 0; const n = parseFloat(String(v).trim().replace(",",".")); return isNaN(n)?0:n; }
 function blankNutr(){ const o={}; NUTR.forEach(n=>o[n]=0); return o; }
 
-function newRow(){ return {nome:"", precio:0, dose:0, nutr:blankNutr()}; }
+function newRow(){ return {nome:"", precio:0, dose:0, nutr:blankNutr(), npkAuto:true}; }
 
 let ROWS = {
   comp:[ newRow() ],
@@ -615,6 +615,22 @@ document.addEventListener("input", e=>{
   }
 });
 
+// autocompleta N-P-K a partir del nombre/fórmula (ej.: "12-15-15" -> N=12, P=15, K=15)
+function autoFillNPK(side, i){
+  const row = ROWS[side][i];
+  if(!row.npkAuto) return;
+  const nums = String(row.nome||"").match(/\d+(?:[.,]\d+)?/g);
+  if(!nums || nums.length < 3) return;
+  ["N","P","K"].forEach((n,idx)=>{
+    row.nutr[n] = nums[idx].replace(",",".");
+    const input = document.querySelector(`input[data-side="${side}"][data-i="${i}"][data-nutr="${n}"]`);
+    if(input){
+      input.value = row.nutr[n];
+      input.closest(".nfield").classList.toggle("filled", !!toNum(input.value));
+    }
+  });
+}
+
 document.addEventListener("input", e=>{
   const t = e.target;
   const side = t.dataset.side;
@@ -622,10 +638,12 @@ document.addEventListener("input", e=>{
   const i = +t.dataset.i;
   if(t.dataset.f){
     ROWS[side][i][t.dataset.f] = t.value;
+    if(t.dataset.f==="nome") autoFillNPK(side, i);
     // recalcular só os totais e balance/kpi, sem re-renderizar os inputs (evita perder foco)
     updateTotalsOnly(side);
   } else if(t.dataset.nutr){
     ROWS[side][i].nutr[t.dataset.nutr] = t.value;
+    if(["N","P","K"].includes(t.dataset.nutr)) ROWS[side][i].npkAuto = false;
     t.closest(".nfield").classList.toggle("filled", !!toNum(t.value));
     updateTotalsOnly(side);
   }
