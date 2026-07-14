@@ -89,7 +89,7 @@
   }
   .field input:focus,.field select:focus{border-color:var(--amber);box-shadow:0 0 0 4px rgba(200,132,31,.18)}
   #cultivo{width:170px}
-  #precioBolsa{width:170px}
+  #precioBolsa,#prodEsperada{width:170px}
   .hint{font-size:12.5px;color:var(--muted);max-width:26ch}
   .btns{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
   button.ctl{
@@ -125,7 +125,7 @@
   .prow:focus-within{border-color:var(--edit-bd)}
   .prow-top{display:flex;gap:8px;align-items:flex-end;margin-bottom:9px;flex-wrap:wrap}
   .pfield{display:flex;flex-direction:column;gap:4px}
-  .pfield span{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;font-weight:700;color:var(--forest2)}
+  .pfield span{font-size:13px;letter-spacing:.10em;text-transform:uppercase;font-weight:700;color:var(--forest2)}
   .pfield.sel{flex:2 1 200px}
   .pfield.sm{flex:1 1 90px}
   .rmbtn{flex:0 0 auto;background:none;border:1.5px solid transparent;color:var(--bad);font-size:14px;
@@ -148,11 +148,15 @@
   .nfield.filled input{background:var(--edit);border-color:var(--edit-bd);color:#705012;font-weight:700}
   .nfield input:focus{border-color:var(--amber);box-shadow:0 0 0 3px rgba(251,197,30,.25);background:var(--edit);color:#705012}
   .rowtotals{padding:0 16px 14px}
-  .totchips{display:flex;flex-wrap:wrap;gap:6px}
+  .totchips{display:flex;flex-wrap:wrap;gap:6px;align-items:stretch}
   .tchip{background:var(--paper2);border:1px solid var(--line);border-radius:20px;
-    padding:4px 10px;font-size:11px;color:var(--ink)}
+    padding:4px 10px;font-size:11px;color:var(--ink);display:flex;align-items:center;justify-content:center;text-align:center;min-height:100%}
   .tchip b{color:var(--forest)}
   .tchip.main{background:var(--amber-soft);border-color:var(--edit-bd);font-weight:700}
+  .tchip.main.big{padding:9px 16px;font-size:13.5px;border-radius:14px;border-width:2px;
+    box-shadow:0 4px 12px -6px rgba(200,132,31,.5)}
+  .tchip.main.big b{font-size:15px}
+  .tchip.scha{background:var(--amber-soft);border:2px solid var(--edit-bd);font-weight:800;color:var(--forest);font-size:13px;padding:9px 14px;border-radius:14px;box-shadow:0 4px 12px -6px rgba(200,132,31,.5)}
   .addrow{padding:2px 16px 16px;display:flex;gap:8px;flex-wrap:wrap}
 
   .balance{margin:0 0 22px}
@@ -167,14 +171,14 @@
 
   .summarybar{background:linear-gradient(135deg,var(--forest) 0%,#0f3d24 100%);
     border:1px solid #0f3d24;border-radius:12px;
-    padding:12px 16px;margin:18px 0 10px;display:flex;flex-wrap:wrap;gap:0;
+    padding:20px 18px;margin:18px 0 10px;display:flex;flex-wrap:wrap;gap:0;
     box-shadow:0 14px 34px -22px rgba(20,40,25,.6)}
-  .sitem{padding:5px 16px;flex:1 1 auto;min-width:100px;text-align:center;
+  .sitem{padding:10px 22px;flex:1 1 auto;min-width:100px;text-align:center;
     border-right:1px solid rgba(255,255,255,.18)}
   .sitem:last-child{border-right:none}
-  .sitem span{display:block;font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;
-    font-weight:700;color:rgba(255,255,255,.65)}
-  .sitem b{display:block;font-family:'Montserrat',sans-serif;font-weight:700;font-size:15.5px;
+  .summarybar .sitem span{display:block;font-size:13px;letter-spacing:.10em;text-transform:uppercase;
+    font-weight:700;color:#ffffff !important;opacity:1;margin-bottom:8px}
+  .sitem b{display:block;font-family:'Montserrat',sans-serif;font-weight:800;font-size:28px;
     color:#fff;margin-top:2px;white-space:nowrap}
   .sitem.hl b{color:var(--amber)}
   .sitem.good b{color:var(--lime)}
@@ -234,6 +238,12 @@
   .rep-meta{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:16px;font-size:13px;color:var(--muted)}
   .rep-meta b{color:var(--forest2)}
   .rep-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+  .rep-summary{background:linear-gradient(135deg,var(--forest) 0%,#0f3d24 100%);border:1px solid #0f3d24;border-radius:14px;padding:18px 12px;margin-bottom:20px;display:grid;grid-template-columns:repeat(4,1fr);box-shadow:0 12px 28px -20px rgba(20,40,25,.7);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .rep-summary-item{text-align:center;padding:5px 12px;border-right:1px solid rgba(255,255,255,.20)}
+  .rep-summary-item:last-child{border-right:none}
+  .rep-summary-item .lab{font-size:10.5px;letter-spacing:.10em;text-transform:uppercase;font-weight:800;color:#fff!important;margin-bottom:7px}
+  .rep-summary-item .big{font-family:'Montserrat',sans-serif;font-size:23px;font-weight:800;line-height:1.1;color:#fff;white-space:nowrap}
+  .rep-summary-item.hl .big{color:var(--amber)}
   .rep-card{background:var(--paper2);border:1px solid var(--line);border-radius:12px;padding:14px}
   .rep-card .lab{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--leaf)}
   .rep-card .big{font-family:'Montserrat',sans-serif;font-weight:600;font-size:19px;color:var(--forest);margin-top:3px;line-height:1.1}
@@ -300,7 +310,7 @@
     .sub{font-size:13.5px}
     .panel{padding:16px;gap:14px;flex-direction:column;align-items:stretch}
     .panel .field{width:100%}
-    #cultivo,#precioBolsa{width:100%;box-sizing:border-box}
+    #cultivo,#precioBolsa,#prodEsperada{width:100%;box-sizing:border-box}
     .hint{max-width:none}
     .btns{margin-left:0;width:100%;flex-direction:row;gap:6px}
     .btns button.ctl{flex:1 1 0;box-sizing:border-box;padding:9px 4px;font-size:11px;white-space:nowrap}
@@ -311,6 +321,11 @@
     .modal-head{padding:14px 16px}
     .modal-head h2{font-size:17px}
     .rep-cards{grid-template-columns:1fr 1fr}
+    .rep-summary{grid-template-columns:1fr 1fr;padding:10px}
+    .rep-summary-item{border-right:none;border-bottom:1px solid rgba(255,255,255,.18);padding:10px 6px}
+    .rep-summary-item:nth-child(odd){border-right:1px solid rgba(255,255,255,.18)}
+    .rep-summary-item:nth-last-child(-n+2){border-bottom:none}
+    .rep-summary-item .big{font-size:19px}
     table.reptab{font-size:11px;min-width:420px}
     .n9{grid-template-columns:repeat(3,1fr)!important}
     .rows{padding:12px 12px 2px;gap:10px}
@@ -332,12 +347,12 @@
     <p class="lsub">Inteligencia de Mercado · Fertilizantes</p>
     <div class="fld">
       <label for="li_email">E-mail</label>
-      <input id="li_email" type="email" placeholder="tu.email@somaxagro.com" autocomplete="username">
+      <input id="li_email" type="email" placeholder="" autocomplete="username">
     </div>
     <div class="fld">
       <label for="li_pass">Contraseña</label>
       <div class="pw-wrap">
-        <input id="li_pass" type="password" placeholder="••••••••" autocomplete="current-password">
+        <input id="li_pass" type="password" placeholder="" autocomplete="current-password">
         <button class="eye" id="li_eye" type="button" aria-label="Mostrar contraseña"></button>
       </div>
     </div>
@@ -368,6 +383,10 @@
     <div class="field">
       <label for="precioBolsa">Precio bolsa (US$)</label>
       <input id="precioBolsa" type="text" inputmode="decimal" placeholder="0.00" value="">
+    </div>
+    <div class="field">
+      <label for="prodEsperada">Productividad esperada (kg/ha)</label>
+      <input id="prodEsperada" type="text" inputmode="decimal" placeholder="Ej.: 3600" value="">
     </div>
     <div class="hint">Los campos amarillos son editables.</div>
     <div class="btns">
@@ -489,9 +508,11 @@ function renderRowTotals(side){
   const tot = calcTotals(side);
   const costs = calcRowCosts(side).filter(v=>v!=null);
   const breakdown = costs.length>1 ? costs.map((v,i)=>`<div class="tchip">P${i+1} <b>${fmtUSD(v,2)}</b></div>`).join("") : "";
+  const precioBolsa = toNum(document.getElementById("precioBolsa").value)||0;
+  const manejo = precioBolsa>0 ? tot.totalCostHa/precioBolsa : null;
   totBox.innerHTML = `
     <div class="totchips">
-      <div class="tchip main">Costo <b>${fmtUSD(tot.totalCostHa,2)}</b>/ha</div>
+      <div class="tchip main big">Costo <b>${fmtUSD(tot.totalCostHa,2)}</b>/ha</div>${manejo!=null?`<div class="tchip scha">${fmt(manejo,2)} sc/ha</div>`:""}
       <div class="tchip">Dosis <b>${fmt(tot.totalDose,0)}</b> kg/ha</div>
       ${tot.pontos?`<div class="tchip">Puntos <b>${fmt(tot.pontos,1)}</b></div><div class="tchip">$/punto <b>${fmt(tot.valorPonto,2)}</b></div>`:""}
       ${breakdown}
@@ -547,6 +568,7 @@ function renderBalance(){
 /* ================= KPIs / inversão ================= */
 function renderKPIs(c,p){
   const precioBolsa = toNum(document.getElementById("precioBolsa").value)||0;
+  const prodEsp = toNum(document.getElementById("prodEsperada").value)||0;
   const pesoSaco = 60;
   const hayCosto = c.totalCostHa>0 || p.totalCostHa>0;
 
@@ -565,11 +587,10 @@ function renderKPIs(c,p){
   const invKg = diffSc!=null ? diffSc*pesoSaco : null;
   const box = document.getElementById("summaryBar");
   box.innerHTML = `
-    <div class="sitem"><span>Competencia</span><b>${manejoComp!=null?fmt(manejoComp,2)+" sc/ha":"—"}</b></div>
-    <div class="sitem"><span>Propio</span><b>${manejoProm!=null?fmt(manejoProm,2)+" sc/ha":"—"}</b></div>
     <div class="sitem ${diffSc==null?'':(diffSc>=0?'hl':'good')}"><span>Diferencia</span><b>${diffSc!=null?((diffSc>=0?"+":"")+fmt(diffSc,2)+" sc/ha"):"—"}</b></div>
     <div class="sitem"><span>Equiv. rinde</span><b>${invKg!=null?((invKg>=0?"+":"")+fmt(invKg,1)+" kg/ha"):"—"}</b></div>
-    <div class="sitem ${diffUSDha>=0?'hl':'good'}"><span>Dif. US$/ha</span><b>${diffUSDha>=0?"+":""}${fmtUSD(diffUSDha,2)}</b></div>`;
+    <div class="sitem ${diffUSDha>=0?'hl':'good'}"><span>Dif. US$/ha</span><b>${diffUSDha>=0?"+":""}${fmtUSD(diffUSDha,2)}</b></div>
+    ${prodEsp>0 && invKg!=null ? `<div class="sitem"><span>% rinde esperado</span><b>${fmt(Math.abs(invKg)/prodEsp*100,1)}%</b></div>` : ""}`;
 
   const note = document.getElementById("noteBox");
   if(!hayCosto){
@@ -715,7 +736,8 @@ function updateTotalsOnly(side){
 
 document.getElementById("cultivo").addEventListener("input", rebuild);
 document.getElementById("cultivo").addEventListener("change", rebuild);
-document.getElementById("precioBolsa").addEventListener("input", ()=>{ const {c,p}=renderBalance(); renderKPIs(c,p); });
+document.getElementById("precioBolsa").addEventListener("input", ()=>{ renderRowTotals("comp"); renderRowTotals("prom"); const {c,p}=renderBalance(); renderKPIs(c,p); });
+document.getElementById("prodEsperada").addEventListener("input", ()=>{ const {c,p}=renderBalance(); renderKPIs(c,p); });
 
 /* ================= add / remove linhas ================= */
 document.addEventListener("click", e=>{
@@ -752,6 +774,7 @@ document.addEventListener("click", e=>{
 function computeReportData(){
   const cultivo = document.getElementById("cultivo").value || "—";
   const precioBolsa = toNum(document.getElementById("precioBolsa").value)||0;
+  const prodEsp = toNum(document.getElementById("prodEsperada").value)||0;
   const pesoSaco = 60;
   const c = calcTotals("comp"), p = calcTotals("prom");
   const manejoComp = precioBolsa>0 ? c.totalCostHa/precioBolsa : 0;
@@ -759,6 +782,7 @@ function computeReportData(){
   const diffSc = manejoProm - manejoComp;
   const diffKg = diffSc*pesoSaco;
   const diffUSDha = p.totalCostHa - c.totalCostHa;
+  const pctRinde = prodEsp>0 ? Math.abs(diffKg)/prodEsp*100 : null;
   const hoje = new Date().toLocaleDateString("es-PY");
 
   const nutrRows = NUTR.map(n=>{
@@ -767,10 +791,10 @@ function computeReportData(){
       diff:(diff>0?"+":"")+fmt(diff,2), cls: diff>0.005?"pos":(diff<-0.005?"neg":"")};
   });
 
-  const prodRow = (r,lado) => ({lado, marca:r.marca||"—", producto:formatNPKName(r),
-    precio:fmtUSD(toNum(r.precio),2), dosis:fmt(toNum(r.dose),0)+" kg/ha"});
-  const prodRows = ROWS.comp.filter(r=>r.nome||r.marca||toNum(r.precio)||toNum(r.dose)).map(r=>prodRow(r,"Competencia"))
-    .concat(ROWS.prom.filter(r=>r.nome||r.marca||toNum(r.precio)||toNum(r.dose)).map(r=>prodRow(r,"Propio")));
+  const prodRow = (r,lado,manejo) => ({lado, marca:r.marca||"—", producto:formatNPKName(r),
+    precio:fmtUSD(toNum(r.precio),2), dosis:fmt(toNum(r.dose),0)+" kg/ha", manejo:fmt(manejo,2)+" sc/ha"});
+  const prodRows = ROWS.comp.filter(r=>r.nome||r.marca||toNum(r.precio)||toNum(r.dose)).map(r=>prodRow(r,"Competencia",manejoComp))
+    .concat(ROWS.prom.filter(r=>r.nome||r.marca||toNum(r.precio)||toNum(r.dose)).map(r=>prodRow(r,"Propio",manejoProm)));
 
   const doseComp = c.totalDose, doseProm = p.totalDose;
   let doseLine = "";
@@ -789,13 +813,13 @@ function computeReportData(){
     concl += ` Mejor relación US$/punto de concentración: US$ ${fmt(p.valorPonto,2)}/punto vs US$ ${fmt(c.valorPonto,2)}/punto de la Competencia.`;
   }
 
-  return {cultivo, precioBolsa, c, p, manejoComp, manejoProm, diffSc, diffKg, diffUSDha, hoje, nutrRows, prodRows, concl};
+  return {cultivo, precioBolsa, prodEsp, pctRinde, c, p, manejoComp, manejoProm, diffSc, diffKg, diffUSDha, hoje, nutrRows, prodRows, concl};
 }
 
 document.getElementById("genReport").addEventListener("click", ()=>{
   const d = computeReportData();
   const nutrRowsHTML = d.nutrRows.map(r=>`<tr><td>${r.nutriente}</td><td>${r.comp}</td><td>${r.prop}</td><td class="${r.cls}">${r.diff}</td></tr>`).join("");
-  const prodRowsHTML = d.prodRows.map(r=>`<tr><td style="text-align:left">${r.lado}</td><td style="text-align:left">${r.marca}</td><td style="text-align:left">${r.producto}</td><td>${r.precio}</td><td>${r.dosis}</td></tr>`).join("");
+  const prodRowsHTML = d.prodRows.map(r=>`<tr><td style="text-align:left">${r.lado}</td><td style="text-align:left">${r.marca}</td><td style="text-align:left">${r.producto}</td><td>${r.precio}</td><td>${r.dosis}</td><td><b>${r.manejo}</b></td></tr>`).join("");
 
   document.getElementById("reportBody").innerHTML = `
     <div class="rep-meta">
@@ -803,14 +827,14 @@ document.getElementById("genReport").addEventListener("click", ()=>{
       <span><b>Cultivo:</b> ${d.cultivo}</span>
       <span><b>Precio bolsa:</b> ${fmtUSD(d.precioBolsa,2)}</span>
     </div>
-    <div class="rep-cards">
-      <div class="rep-card"><div class="lab">Costo manejo Competencia</div><div class="big">${fmt(d.manejoComp,2)} sc/ha</div><div class="sm">${fmtUSD(d.c.totalCostHa,2)}/ha</div></div>
-      <div class="rep-card"><div class="lab">Costo manejo Propio</div><div class="big">${fmt(d.manejoProm,2)} sc/ha</div><div class="sm">${fmtUSD(d.p.totalCostHa,2)}/ha</div></div>
-      <div class="rep-card prom"><div class="lab">Diferencia de inversión</div><div class="big">${d.diffSc>=0?"+":""}${fmt(d.diffSc,2)} sc/ha</div><div class="sm">≈ ${d.diffKg>=0?"+":""}${fmt(d.diffKg,1)} kg/ha de rinde</div></div>
-      <div class="rep-card"><div class="lab">Diferencia US$/ha</div><div class="big">${d.diffUSDha>=0?"+":""}${fmtUSD(d.diffUSDha,2)}</div><div class="sm">Propio vs Competencia</div></div>
+    <div class="rep-summary">
+      <div class="rep-summary-item hl"><div class="lab">Diferencia</div><div class="big">${d.diffSc>=0?"+":""}${fmt(d.diffSc,2)} sc/ha</div></div>
+      <div class="rep-summary-item"><div class="lab">Equiv. rinde</div><div class="big">${d.diffKg>=0?"+":""}${fmt(d.diffKg,1)} kg/ha</div></div>
+      <div class="rep-summary-item hl"><div class="lab">Dif. US$/ha</div><div class="big">${d.diffUSDha>=0?"+":""}${fmtUSD(d.diffUSDha,2)}</div></div>
+      <div class="rep-summary-item"><div class="lab">% rinde esperado</div><div class="big">${d.pctRinde!=null?fmt(d.pctRinde,1)+"%":"—"}</div></div>
     </div>
     <div class="rep-scroller">
-      <table class="reptab"><thead><tr><th>Lado</th><th>Marca</th><th>Producto</th><th>US$/ton</th><th>Dosis</th></tr></thead>
+      <table class="reptab"><thead><tr><th>Lado</th><th>Marca</th><th>Producto</th><th>US$/ton</th><th>Dosis</th><th>Costo de manejo</th></tr></thead>
       <tbody>${prodRowsHTML}</tbody></table>
     </div>
     <p style="font-size:11px;color:var(--muted);margin:2px 0 10px">Balance nutricional (kg/ha):</p>
