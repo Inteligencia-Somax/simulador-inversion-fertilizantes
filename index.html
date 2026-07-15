@@ -14,13 +14,13 @@
     --paper:#ffffff;
     --paper2:#f2f6f3;
     --ink:#20261f;
-    --forest:#1B5B35;      /* Somax verde oscuro oficial */
-    --forest2:#01261F;      /* Somax verde complementario (oscuro) */
-    --leaf:#038C33;         /* Somax verde complementario (vivo) */
-    --amber:#FBC51E;        /* Somax amarillo oficial */
+    --forest:#1B5B35;      
+    --forest2:#01261F;      
+    --leaf:#038C33;         
+    --amber:#FBC51E;        
     --amber-soft:#fdeab3;
-    --marron:#573D2D;       /* Somax marrón oficial */
-    --lime:#A5D936;         /* Somax verde-lima complementario */
+    --marron:#573D2D;       
+    --lime:#A5D936;         
     --edit:#fff4cf;
     --edit-bd:#e9c65a;
     --win:#1B5B35;
@@ -32,7 +32,7 @@
     --comp1:#6b6459;        /* Competencia: gris neutro, sin color de marca */
     --comp2:#948c7c;
     --comp-bg:#eef1ee;
-    --prom1:#1B5B35;        /* Propio: colores oficiales Somax */
+    --prom1:#1B5B35;        
     --prom2:#FBC51E;
     --prom-bg:#fbf3d6;
   }
@@ -238,7 +238,7 @@
   .rep-meta{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:16px;font-size:13px;color:var(--muted)}
   .rep-meta b{color:var(--forest2)}
   .rep-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
-  .rep-summary{background:linear-gradient(135deg,var(--forest) 0%,#0f3d24 100%);border:1px solid #0f3d24;border-radius:14px;padding:18px 12px;margin-bottom:20px;display:grid;grid-template-columns:repeat(4,1fr);box-shadow:0 12px 28px -20px rgba(20,40,25,.7);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .rep-summary{background:linear-gradient(135deg,var(--forest) 0%,#0f3d24 100%);border:1px solid #0f3d24;border-radius:14px;padding:18px 12px;margin-bottom:20px;display:grid;grid-template-columns:repeat(3,1fr);box-shadow:0 12px 28px -20px rgba(20,40,25,.7);-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .rep-summary-item{text-align:center;padding:5px 12px;border-right:1px solid rgba(255,255,255,.20)}
   .rep-summary-item:last-child{border-right:none}
   .rep-summary-item .lab{font-size:10.5px;letter-spacing:.10em;text-transform:uppercase;font-weight:800;color:#fff!important;margin-bottom:7px}
@@ -277,30 +277,6 @@
     #reportModal .rep-scroller{overflow:visible;border:none}
   }
 
-  /* login */
-  .login-screen{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;
-    padding:24px;background:var(--paper);
-    background-image:
-      radial-gradient(circle at 15% 10%, rgba(63,125,78,.12), transparent 42%),
-      radial-gradient(circle at 85% 90%, rgba(200,132,31,.12), transparent 46%)}
-  .login-card{width:100%;max-width:430px;background:var(--paper2);border:1px solid var(--line);
-    border-radius:18px;padding:26px 26px 24px;box-shadow:0 30px 80px -30px rgba(20,40,25,.6)}
-  .login-card h2{font-family:'Montserrat',sans-serif;font-weight:600;font-size:23px;color:var(--forest);
-    text-align:center;margin:0 0 4px}
-  .login-card .lsub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:20px}
-  .login-card .fld{margin-bottom:14px}
-  .pw-wrap{position:relative}
-  .pw-wrap input{width:100%;padding-right:44px}
-  .pw-wrap .eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);
-    width:32px;height:32px;border:none;background:transparent;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;color:var(--forest2);border-radius:7px}
-  .pw-wrap .eye:hover{background:rgba(63,125,78,.12)}
-  .pw-wrap .eye svg{width:20px;height:20px}
-  .login-err{color:#c0392b;font-size:13px;font-weight:600;min-height:18px;margin:2px 2px 12px;text-align:center}
-  .login-card button.enter{width:100%;font-family:'Montserrat';font-weight:700;font-size:15px;cursor:pointer;
-    border:none;background:var(--forest);color:var(--paper);border-radius:11px;padding:12px;transition:.16s}
-  .login-card button.enter:hover{background:var(--forest2)}
-
   @media(max-width:640px){
     input,select,textarea{font-size:16px!important}
     .wrap{padding:14px}
@@ -321,7 +297,7 @@
     .modal-head{padding:14px 16px}
     .modal-head h2{font-size:17px}
     .rep-cards{grid-template-columns:1fr 1fr}
-    .rep-summary{grid-template-columns:1fr 1fr;padding:10px}
+    .rep-summary{grid-template-columns:repeat(3,1fr);padding:10px}
     .rep-summary-item{border-right:none;border-bottom:1px solid rgba(255,255,255,.18);padding:10px 6px}
     .rep-summary-item:nth-child(odd){border-right:1px solid rgba(255,255,255,.18)}
     .rep-summary-item:nth-last-child(-n+2){border-bottom:none}
@@ -330,7 +306,7 @@
     .n9{grid-template-columns:repeat(3,1fr)!important}
     .rows{padding:12px 12px 2px;gap:10px}
     .prow{padding:10px 11px}
-    .prow-nutr{grid-template-columns:repeat(4,1fr)}
+    .prow-nutr{grid-template-columns:repeat(3,1fr)}
     .pfield.sel{flex:1 1 calc(50% - 4px)}
     .pfield.sm{flex:1 1 calc(50% - 4px)}
     .rmbtn{order:1}
@@ -340,27 +316,6 @@
 </style>
 </head>
 <body>
-<!-- LOGIN -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-card">
-    <h2>Acceso restringido</h2>
-    <p class="lsub">Inteligencia de Mercado · Fertilizantes</p>
-    <div class="fld">
-      <label for="li_email">E-mail</label>
-      <input id="li_email" type="email" placeholder="" autocomplete="username">
-    </div>
-    <div class="fld">
-      <label for="li_pass">Contraseña</label>
-      <div class="pw-wrap">
-        <input id="li_pass" type="password" placeholder="" autocomplete="current-password">
-        <button class="eye" id="li_eye" type="button" aria-label="Mostrar contraseña"></button>
-      </div>
-    </div>
-    <div class="login-err" id="li_err"></div>
-    <button class="enter" id="li_enter">Entrar</button>
-  </div>
-</div>
-
 <div class="wrap" id="appWrap">
   <header>
     <div class="kicker">Inteligencia de Mercado · Fertilizantes</div>
@@ -587,10 +542,9 @@ function renderKPIs(c,p){
   const invKg = diffSc!=null ? diffSc*pesoSaco : null;
   const box = document.getElementById("summaryBar");
   box.innerHTML = `
-    <div class="sitem ${diffSc==null?'':(diffSc>=0?'hl':'good')}"><span>Diferencia</span><b>${diffSc!=null?((diffSc>=0?"+":"")+fmt(diffSc,2)+" sc/ha"):"—"}</b></div>
-    <div class="sitem"><span>Equiv. rinde</span><b>${invKg!=null?((invKg>=0?"+":"")+fmt(invKg,1)+" kg/ha"):"—"}</b></div>
-    <div class="sitem ${diffUSDha>=0?'hl':'good'}"><span>Dif. US$/ha</span><b>${diffUSDha>=0?"+":""}${fmtUSD(diffUSDha,2)}</b></div>
-    ${prodEsp>0 && invKg!=null ? `<div class="sitem"><span>% rinde esperado</span><b>${fmt(Math.abs(invKg)/prodEsp*100,1)}%</b></div>` : ""}`;
+    <div class="sitem ${diffSc==null?'':(diffSc>=0?'hl':'good')}"><span>Diferencia de inversión</span><b>${diffSc!=null?((diffSc>=0?"+":"")+fmt(diffSc,2)+" sc/ha"):"—"}</b></div>
+    <div class="sitem"><span>Inversión kg/ha</span><b>${invKg!=null?((invKg>=0?"+":"")+fmt(invKg,1)+" kg/ha"):"—"}</b></div>
+    <div class="sitem ${diffUSDha>=0?'hl':'good'}"><span>Dif. US$/ha</span><b>${diffUSDha>=0?"+":""}${fmtUSD(diffUSDha,2)}</b></div>`;
 
   const note = document.getElementById("noteBox");
   if(!hayCosto){
@@ -828,10 +782,9 @@ document.getElementById("genReport").addEventListener("click", ()=>{
       <span><b>Precio bolsa:</b> ${fmtUSD(d.precioBolsa,2)}</span>
     </div>
     <div class="rep-summary">
-      <div class="rep-summary-item hl"><div class="lab">Diferencia</div><div class="big">${d.diffSc>=0?"+":""}${fmt(d.diffSc,2)} sc/ha</div></div>
-      <div class="rep-summary-item"><div class="lab">Equiv. rinde</div><div class="big">${d.diffKg>=0?"+":""}${fmt(d.diffKg,1)} kg/ha</div></div>
+      <div class="rep-summary-item hl"><div class="lab">Diferencia de inversión</div><div class="big">${d.diffSc>=0?"+":""}${fmt(d.diffSc,2)} sc/ha</div></div>
+      <div class="rep-summary-item"><div class="lab">Inversión kg/ha</div><div class="big">${d.diffKg>=0?"+":""}${fmt(d.diffKg,1)} kg/ha</div></div>
       <div class="rep-summary-item hl"><div class="lab">Dif. US$/ha</div><div class="big">${d.diffUSDha>=0?"+":""}${fmtUSD(d.diffUSDha,2)}</div></div>
-      <div class="rep-summary-item"><div class="lab">% rinde esperado</div><div class="big">${d.pctRinde!=null?fmt(d.pctRinde,1)+"%":"—"}</div></div>
     </div>
     <div class="rep-scroller">
       <table class="reptab"><thead><tr><th>Lado</th><th>Marca</th><th>Producto</th><th>US$/ton</th><th>Dosis</th><th>Costo de manejo</th></tr></thead>
@@ -875,40 +828,6 @@ document.getElementById("clearAll").addEventListener("click", ()=>{
   ROWS.prom = [ newRow() ];
   rebuild();
 });
-
-/* ================= login ================= */
-const CREDS = [
-  { email:"angelica.davalos@somaxagro.com", pass:"Som491Crm" },
-  { email:"joao.andrade@somaxagro.com", pass:"Som123Crm" },
-];
-const eyeOpen = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>`;
-const eyeOff = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
-const liEye = document.getElementById("li_eye");
-const liPass = document.getElementById("li_pass");
-liEye.innerHTML = eyeOpen;
-liEye.addEventListener("click",()=>{
-  const show = liPass.type==="password";
-  liPass.type = show?"text":"password";
-  liEye.innerHTML = show?eyeOff:eyeOpen;
-  liEye.setAttribute("aria-label", show?"Ocultar contraseña":"Mostrar contraseña");
-});
-function tryLogin(){
-  const email=document.getElementById("li_email").value.trim().toLowerCase();
-  const pass=liPass.value;
-  const ok = CREDS.some(c=>email===c.email && pass===c.pass);
-  if(ok){
-    document.getElementById("loginScreen").style.display="none";
-    document.body.style.overflow="";
-  } else {
-    document.getElementById("li_err").textContent="E-mail o contraseña incorrectos.";
-    liPass.value=""; liPass.focus();
-  }
-}
-document.getElementById("li_enter").addEventListener("click",tryLogin);
-[document.getElementById("li_email"),liPass].forEach(el=>
-  el.addEventListener("keydown",e=>{ if(e.key==="Enter") tryLogin();
-    document.getElementById("li_err").textContent=""; }));
-document.body.style.overflow="hidden";
 
 rebuild();
 </script>
