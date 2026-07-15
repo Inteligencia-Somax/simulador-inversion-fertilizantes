@@ -89,7 +89,7 @@
   }
   .field input:focus,.field select:focus{border-color:var(--amber);box-shadow:0 0 0 4px rgba(200,132,31,.18)}
   #cultivo{width:170px}
-  #precioBolsa,#prodEsperada{width:170px}
+  #precioBolsa{width:170px}
   .hint{font-size:12.5px;color:var(--muted);max-width:26ch}
   .btns{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
   button.ctl{
@@ -286,7 +286,7 @@
     .sub{font-size:13.5px}
     .panel{padding:16px;gap:14px;flex-direction:column;align-items:stretch}
     .panel .field{width:100%}
-    #cultivo,#precioBolsa,#prodEsperada{width:100%;box-sizing:border-box}
+    #cultivo,#precioBolsa{width:100%;box-sizing:border-box}
     .hint{max-width:none}
     .btns{margin-left:0;width:100%;flex-direction:row;gap:6px}
     .btns button.ctl{flex:1 1 0;box-sizing:border-box;padding:9px 4px;font-size:11px;white-space:nowrap}
@@ -338,10 +338,6 @@
     <div class="field">
       <label for="precioBolsa">Precio bolsa (US$)</label>
       <input id="precioBolsa" type="text" inputmode="decimal" placeholder="0.00" value="">
-    </div>
-    <div class="field">
-      <label for="prodEsperada">Productividad esperada (kg/ha)</label>
-      <input id="prodEsperada" type="text" inputmode="decimal" placeholder="Ej.: 3600" value="">
     </div>
     <div class="hint">Los campos amarillos son editables.</div>
     <div class="btns">
@@ -523,7 +519,6 @@ function renderBalance(){
 /* ================= KPIs / inversão ================= */
 function renderKPIs(c,p){
   const precioBolsa = toNum(document.getElementById("precioBolsa").value)||0;
-  const prodEsp = toNum(document.getElementById("prodEsperada").value)||0;
   const pesoSaco = 60;
   const hayCosto = c.totalCostHa>0 || p.totalCostHa>0;
 
@@ -691,7 +686,7 @@ function updateTotalsOnly(side){
 document.getElementById("cultivo").addEventListener("input", rebuild);
 document.getElementById("cultivo").addEventListener("change", rebuild);
 document.getElementById("precioBolsa").addEventListener("input", ()=>{ renderRowTotals("comp"); renderRowTotals("prom"); const {c,p}=renderBalance(); renderKPIs(c,p); });
-document.getElementById("prodEsperada").addEventListener("input", ()=>{ const {c,p}=renderBalance(); renderKPIs(c,p); });
+
 
 /* ================= add / remove linhas ================= */
 document.addEventListener("click", e=>{
@@ -728,7 +723,6 @@ document.addEventListener("click", e=>{
 function computeReportData(){
   const cultivo = document.getElementById("cultivo").value || "—";
   const precioBolsa = toNum(document.getElementById("precioBolsa").value)||0;
-  const prodEsp = toNum(document.getElementById("prodEsperada").value)||0;
   const pesoSaco = 60;
   const c = calcTotals("comp"), p = calcTotals("prom");
   const manejoComp = precioBolsa>0 ? c.totalCostHa/precioBolsa : 0;
@@ -736,7 +730,6 @@ function computeReportData(){
   const diffSc = manejoProm - manejoComp;
   const diffKg = diffSc*pesoSaco;
   const diffUSDha = p.totalCostHa - c.totalCostHa;
-  const pctRinde = prodEsp>0 ? Math.abs(diffKg)/prodEsp*100 : null;
   const hoje = new Date().toLocaleDateString("es-PY");
 
   const nutrRows = NUTR.map(n=>{
@@ -767,7 +760,7 @@ function computeReportData(){
     concl += ` Mejor relación US$/punto de concentración: US$ ${fmt(p.valorPonto,2)}/punto vs US$ ${fmt(c.valorPonto,2)}/punto de la Competencia.`;
   }
 
-  return {cultivo, precioBolsa, prodEsp, pctRinde, c, p, manejoComp, manejoProm, diffSc, diffKg, diffUSDha, hoje, nutrRows, prodRows, concl};
+  return {cultivo, precioBolsa, c, p, manejoComp, manejoProm, diffSc, diffKg, diffUSDha, hoje, nutrRows, prodRows, concl};
 }
 
 document.getElementById("genReport").addEventListener("click", ()=>{
