@@ -90,7 +90,6 @@
   .field input:focus,.field select:focus{border-color:var(--amber);box-shadow:0 0 0 4px rgba(200,132,31,.18)}
   #cultivo{width:170px}
   #precioBolsa{width:170px}
-  .hint{font-size:12.5px;color:var(--muted);max-width:26ch}
   .btns{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
   button.ctl{
     font-family:'Montserrat';font-weight:600;font-size:13px;cursor:pointer;
@@ -188,8 +187,12 @@
   .sitem.hl b{color:var(--amber)}
   .sitem.good b{color:var(--lime)}
   @media(max-width:640px){
-    .sitem{flex:1 1 40%;border-right:none;border-bottom:1px solid rgba(255,255,255,.18);padding:7px 6px}
-    .sitem:nth-child(2n){border-right:none}
+    .summarybar{padding:6px 14px}
+    .sitem{flex:1 1 100%;border-right:none!important;border-bottom:1px solid rgba(255,255,255,.16);
+      padding:13px 4px;display:flex;align-items:center;justify-content:space-between;text-align:left}
+    .sitem:last-child{border-bottom:none}
+    .summarybar .sitem span{font-size:11px;letter-spacing:.06em;margin-bottom:0}
+    .sitem b{font-size:19px;white-space:normal;text-align:right}
   }
 
 
@@ -271,15 +274,26 @@
     border-radius:0 10px 10px 0;font-size:13.5px;color:#5d4516;line-height:1.55}
 
   @media print{
+    @page{ size:A4; margin:10mm; }
+    html, body{height:auto!important;min-height:0!important}
     body > *{display:none!important}
-    #reportModal{display:block!important;position:static!important;background:#fff;padding:0;margin:0}
+    #reportModal{display:block!important;position:static!important;background:#fff;padding:0;margin:0;
+      height:auto!important;min-height:0!important;inset:auto!important}
     #reportModal .modal-foot,#reportModal .modal-head .x{display:none!important}
-    #reportModal .modal{max-width:none;max-height:none;overflow:visible;box-shadow:none;
+    #reportModal .modal{max-width:none;max-height:none!important;height:auto!important;overflow:visible;box-shadow:none;
       border:none;animation:none;display:block;margin:0}
-    #reportModal .modal-head{background:#fff;border-bottom:2px solid var(--forest);padding:0 0 10px}
-    #reportModal .modal-head h2{color:var(--forest)}
-    #reportModal .modal-body{overflow:visible;max-height:none;padding:12px 0 0}
-    #reportModal .rep-scroller{overflow:visible;border:none}
+    #reportModal .modal-head{background:#fff;border-bottom:2px solid var(--forest);padding:0 0 8px}
+    #reportModal .modal-head h2{color:var(--forest);font-size:18px}
+    #reportModal .modal-body{overflow:visible;max-height:none!important;height:auto!important;padding:10px 0 0}
+    #reportModal .rep-scroller{overflow:visible;border:none;margin-bottom:8px}
+    #reportModal .rep-meta{margin-bottom:10px;font-size:11px}
+    #reportModal .rep-summary{padding:10px;margin-bottom:10px}
+    #reportModal .rep-summary-item .lab{font-size:9px;margin-bottom:3px}
+    #reportModal .rep-summary-item .big{font-size:15px}
+    #reportModal table.reptab{font-size:9.5px}
+    #reportModal table.reptab th,#reportModal table.reptab td{padding:3px 5px}
+    #reportModal p{font-size:10px;margin:2px 0 6px}
+    #reportModal tr{page-break-inside:avoid}
   }
 
   @media(max-width:640px){
@@ -292,21 +306,25 @@
     .panel{padding:16px;gap:14px;flex-direction:column;align-items:stretch}
     .panel .field{width:100%}
     #cultivo,#precioBolsa{width:100%;box-sizing:border-box}
-    .hint{max-width:none}
     .btns{margin-left:0;width:100%;flex-direction:row;gap:6px}
     .btns button.ctl{flex:1 1 0;box-sizing:border-box;padding:9px 4px;font-size:11px;white-space:nowrap}
     .btns button.ctl .btxt-full{display:none}
     .btns button.ctl .btxt-short{display:inline}
     .cardhead h3{font-size:16px}
+    .totchips{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+    .tchip{justify-content:center;text-align:center;padding:8px 6px}
+    .tchip.main.big{grid-column:1/-1;justify-content:center}
     .modal-body{padding:16px}
     .modal-head{padding:14px 16px}
     .modal-head h2{font-size:17px}
     .rep-cards{grid-template-columns:1fr 1fr}
-    .rep-summary{grid-template-columns:repeat(3,1fr);padding:10px}
-    .rep-summary-item{border-right:none;border-bottom:1px solid rgba(255,255,255,.18);padding:10px 6px}
-    .rep-summary-item:nth-child(odd){border-right:1px solid rgba(255,255,255,.18)}
-    .rep-summary-item:nth-last-child(-n+2){border-bottom:none}
-    .rep-summary-item .big{font-size:19px}
+    .rep-summary{grid-template-columns:1fr;padding:4px 12px}
+    .rep-summary-item{border-right:none!important;border-bottom:1px solid rgba(255,255,255,.16);
+      padding:12px 4px;display:flex;align-items:center;justify-content:space-between;text-align:left;min-width:0}
+    .rep-summary-item:last-child{border-bottom:none}
+    .rep-summary-item .lab{margin-bottom:0;font-size:10px}
+    .rep-summary-item .big{font-size:17px;white-space:normal;text-align:right}
+    .rep-meta{gap:8px 16px;font-size:12px}
     table.reptab{font-size:11px;min-width:420px}
     .n9{grid-template-columns:repeat(3,1fr)!important}
     .rows{padding:12px 12px 2px;gap:10px}
@@ -344,7 +362,6 @@
       <label for="precioBolsa">Precio bolsa (US$)</label>
       <input id="precioBolsa" type="text" inputmode="decimal" placeholder="0.00" value="">
     </div>
-    <div class="hint">Los campos amarillos son editables.</div>
     <div class="btns">
       <button class="ctl amber" id="genReport">📄 <span class="btxt-full">Generar informe</span><span class="btxt-short">Informe</span></button>
       <button class="ctl" id="clearAll">🧹 <span class="btxt-full">Limpiar todo</span><span class="btxt-short">Limpiar</span></button>
@@ -352,7 +369,7 @@
   </div>
 
   <div class="summarybar" id="summaryBar"></div>
-  <div class="note" id="noteBox">Completá precios y dosis para ver la conclusión del simulador.</div>
+  <div class="note" id="noteBox" style="display:none">Completá precios y dosis para ver la conclusión del simulador.</div>
 
   <div class="gatewarn" id="gateWarn">⚠️ Completá <b>Cultivo</b> y <b>Precio bolsa</b> arriba para poder cargar productos.</div>
 
@@ -470,7 +487,7 @@ function renderRowTotals(side){
   const manejo = precioBolsa>0 ? tot.totalCostHa/precioBolsa : null;
   totBox.innerHTML = `
     <div class="totchips">
-      <div class="tchip main big"><span>Costo <b>${fmtUSD(tot.totalCostHa,2)}</b>/ha</span></div>${manejo!=null?`<div class="tchip scha"><span>${fmt(manejo,2)} sc/ha</span></div>`:""}
+      <div class="tchip main big"><span>Costo <b>${fmtUSD(tot.totalCostHa,2)}</b>/ha</span></div>${manejo!=null?`<div class="tchip scha"><span>US$ <b>${fmt(manejo,2)}</b> sc/ha</span></div>`:""}
       ${tot.pontos?`<div class="tchip"><span>Puntos <b>${fmt(tot.pontos,1)}</b></span></div><div class="tchip"><span>$/punto <b>${fmt(tot.valorPonto,2)}</b></span></div>`:""}
       ${breakdown}
     </div>`;
@@ -558,10 +575,12 @@ function renderKPIs(c,p){
 
   const note = document.getElementById("noteBox");
   if(!hayCosto){
-    note.innerHTML = "Completá precio, dosis y análisis de un producto de cada lado.";
+    note.style.display = "none";
   } else if(precioBolsa<=0){
+    note.style.display = "block";
     note.innerHTML = "Ingresá el <b>precio de la bolsa</b> arriba para ver la conclusión.";
   } else {
+    note.style.display = "block";
     const doseComp = c.totalDose, doseProm = p.totalDose;
     let doseLine = "";
     if(doseProm>0 && doseComp>0 && doseProm<doseComp){
