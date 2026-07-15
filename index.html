@@ -157,6 +157,11 @@
     box-shadow:0 4px 12px -6px rgba(200,132,31,.5)}
   .tchip.main.big b{font-size:15px}
   .tchip.scha{background:var(--amber-soft);border:2px solid var(--edit-bd);font-weight:800;color:var(--forest);font-size:13px;padding:9px 14px;border-radius:14px;box-shadow:0 4px 12px -6px rgba(200,132,31,.5)}
+
+  .gatewarn{display:none;background:#fbeecb;border:1.5px solid var(--edit-bd);color:#6b4a06;
+    font-size:13px;font-weight:600;padding:11px 16px;border-radius:12px;margin:0 0 16px}
+  #prodGrid.locked-grid{position:relative}
+  #prodGrid.locked-grid .card{opacity:.4;filter:grayscale(.5);pointer-events:none;user-select:none;transition:opacity .15s}
   .addrow{padding:2px 16px 16px;display:flex;gap:8px;flex-wrap:wrap}
 
   .balance{margin:0 0 22px}
@@ -349,7 +354,9 @@
   <div class="summarybar" id="summaryBar"></div>
   <div class="note" id="noteBox">Completá precios y dosis para ver la conclusión del simulador.</div>
 
-  <div class="grid2">
+  <div class="gatewarn" id="gateWarn">⚠️ Completá <b>Cultivo</b> y <b>Precio bolsa</b> arriba para poder cargar productos.</div>
+
+  <div class="grid2" id="prodGrid">
     <div class="card comp" id="cardComp">
       <div class="cardhead">
         <h3>Competencia</h3>
@@ -458,14 +465,13 @@ function renderRowTotals(side){
   const totBox = document.getElementById(side==="comp"?"totComp":"totProm");
   const tot = calcTotals(side);
   const costs = calcRowCosts(side).filter(v=>v!=null);
-  const breakdown = costs.length>1 ? costs.map((v,i)=>`<div class="tchip">P${i+1} <b>${fmtUSD(v,2)}</b></div>`).join("") : "";
+  const breakdown = costs.length>1 ? costs.map((v,i)=>`<div class="tchip"><span>P${i+1} <b>${fmtUSD(v,2)}</b></span></div>`).join("") : "";
   const precioBolsa = toNum(document.getElementById("precioBolsa").value)||0;
   const manejo = precioBolsa>0 ? tot.totalCostHa/precioBolsa : null;
   totBox.innerHTML = `
     <div class="totchips">
-      <div class="tchip main big">Costo <b>${fmtUSD(tot.totalCostHa,2)}</b>/ha</div>${manejo!=null?`<div class="tchip scha">${fmt(manejo,2)} sc/ha</div>`:""}
-      <div class="tchip">Dosis <b>${fmt(tot.totalDose,0)}</b> kg/ha</div>
-      ${tot.pontos?`<div class="tchip">Puntos <b>${fmt(tot.pontos,1)}</b></div><div class="tchip">$/punto <b>${fmt(tot.valorPonto,2)}</b></div>`:""}
+      <div class="tchip main big"><span>Costo <b>${fmtUSD(tot.totalCostHa,2)}</b>/ha</span></div>${manejo!=null?`<div class="tchip scha"><span>${fmt(manejo,2)} sc/ha</span></div>`:""}
+      ${tot.pontos?`<div class="tchip"><span>Puntos <b>${fmt(tot.pontos,1)}</b></span></div><div class="tchip"><span>$/punto <b>${fmt(tot.valorPonto,2)}</b></span></div>`:""}
       ${breakdown}
     </div>`;
 }
@@ -517,7 +523,16 @@ function renderBalance(){
 }
 
 /* ================= KPIs / inversão ================= */
+function updateGate(){
+  const cultivo = document.getElementById("cultivo").value;
+  const precioBolsa = toNum(document.getElementById("precioBolsa").value);
+  const ok = !!cultivo && precioBolsa>0;
+  document.getElementById("prodGrid").classList.toggle("locked-grid", !ok);
+  document.getElementById("gateWarn").style.display = ok ? "none" : "block";
+}
+
 function renderKPIs(c,p){
+  updateGate();
   const precioBolsa = toNum(document.getElementById("precioBolsa").value)||0;
   const pesoSaco = 60;
   const hayCosto = c.totalCostHa>0 || p.totalCostHa>0;
@@ -539,7 +554,7 @@ function renderKPIs(c,p){
   box.innerHTML = `
     <div class="sitem ${diffSc==null?'':(diffSc>=0?'hl':'good')}"><span>Diferencia de inversión</span><b>${diffSc!=null?((diffSc>=0?"+":"")+fmt(diffSc,2)+" sc/ha"):"—"}</b></div>
     <div class="sitem"><span>Inversión kg/ha</span><b>${invKg!=null?((invKg>=0?"+":"")+fmt(invKg,1)+" kg/ha"):"—"}</b></div>
-    <div class="sitem ${diffUSDha>=0?'hl':'good'}"><span>Dif. US$/ha</span><b>${diffUSDha>=0?"+":""}${fmtUSD(diffUSDha,2)}</b></div>`;
+    <div class="sitem ${diffUSDha>=0?'hl':'good'}"><span>Diferencia US$/ha</span><b>${diffUSDha>=0?"+":""}${fmtUSD(diffUSDha,2)}</b></div>`;
 
   const note = document.getElementById("noteBox");
   if(!hayCosto){
@@ -606,10 +621,10 @@ function fmtSecondary(v){
 }
 // ej.: fila con N=12,P=15,K=15,S=9 -> "12-15-15 + 9S"; con S=8,B=0.15 -> "11-17-17 + 8S + 0,15B"
 function formatNPKName(row){
-  const nome = row.nome;
-  const npk = parseNPK(nome);
-  if(!npk) return nome||"—";
-  const base = npk.join("-");
+  const npk = parseNPK(row.nome);
+  if(!npk) return row.nome||"—"; // texto libre (ej. "MAP"): no lo tocamos
+  // la base N-P-K siempre refleja los valores reales cargados, aunque el nombre haya quedado desactualizado
+  const base = `${fmtSecondary(row.nutr.N)}-${fmtSecondary(row.nutr.P)}-${fmtSecondary(row.nutr.K)}`;
   const SEC = ["Ca","Mg","S","Zn","B","Mn"];
   const extras = SEC.filter(n=>toNum(row.nutr[n])>0).map(n=>`${fmtSecondary(row.nutr[n])}${n}`);
   return extras.length ? `${base} + ${extras.join(" + ")}` : base;
@@ -777,7 +792,7 @@ document.getElementById("genReport").addEventListener("click", ()=>{
     <div class="rep-summary">
       <div class="rep-summary-item hl"><div class="lab">Diferencia de inversión</div><div class="big">${d.diffSc>=0?"+":""}${fmt(d.diffSc,2)} sc/ha</div></div>
       <div class="rep-summary-item"><div class="lab">Inversión kg/ha</div><div class="big">${d.diffKg>=0?"+":""}${fmt(d.diffKg,1)} kg/ha</div></div>
-      <div class="rep-summary-item hl"><div class="lab">Dif. US$/ha</div><div class="big">${d.diffUSDha>=0?"+":""}${fmtUSD(d.diffUSDha,2)}</div></div>
+      <div class="rep-summary-item hl"><div class="lab">Diferencia US$/ha</div><div class="big">${d.diffUSDha>=0?"+":""}${fmtUSD(d.diffUSDha,2)}</div></div>
     </div>
     <div class="rep-scroller">
       <table class="reptab"><thead><tr><th>Lado</th><th>Marca</th><th>Producto</th><th>US$/ton</th><th>Dosis</th><th>Costo de manejo</th></tr></thead>
