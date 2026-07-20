@@ -56,10 +56,9 @@
   .wrap{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:clamp(16px,3vw,34px);background:var(--paper)}
 
   header{display:flex;flex-direction:column;align-items:flex-start;margin-bottom:18px}
-  .banner{position:relative;width:100%;height:150px;overflow:hidden;border-radius:16px;
-    margin-bottom:14px;box-shadow:0 14px 34px -20px rgba(20,40,25,.5)}
-  .banner img{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-    width:100%;height:auto;min-height:100%}
+  .banner{width:100%;line-height:0;margin-bottom:14px}
+  .banner img{width:100%;height:auto;display:block;border-radius:16px;
+    box-shadow:0 14px 34px -20px rgba(20,40,25,.5)}
   .sub{color:var(--muted);max-width:62ch;font-size:15px}
 
   .panel{
@@ -287,8 +286,8 @@
     input,select,textarea{font-size:16px!important}
     .wrap{padding:14px}
     header{gap:14px;margin-bottom:10px}
-    .banner{height:66px;border-radius:12px}
-    .banner img{width:auto;height:auto;min-width:720px;max-width:none;min-height:0}
+    .banner{margin-bottom:10px}
+    .banner img{border-radius:10px}
     .sub{font-size:13.5px}
     .panel{padding:16px;gap:14px;flex-direction:column;align-items:stretch}
     .panel .field{width:100%}
